@@ -188,14 +188,14 @@ const dashBoardNavTree = [{
       breadcrumb: false,
       submenu: []
     },
-    {
-      key: 'dashboards-analytic',
-      path: `${APP_PREFIX_PATH}/dashboards/analytic`,
-      title: 'sidenav.dashboard.analytic',
-      icon: DotChartOutlined,
-      breadcrumb: false,
-      submenu: []
-    },
+    // {
+    //   key: 'dashboards-analytic',
+    //   path: `${APP_PREFIX_PATH}/dashboards/analytic`,
+    //   title: 'sidenav.dashboard.analytic',
+    //   icon: DotChartOutlined,
+    //   breadcrumb: false,
+    //   submenu: []
+    // },
     // {
     //   key: 'dashboards-sales',
     //   path: `${APP_PREFIX_PATH}/dashboards/sales`,
