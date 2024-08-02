@@ -30,6 +30,31 @@
     src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmWUlfBBc9.ttf) format('truetype')
 }
 
+.markdown-response {
+    border: 1px solid #d9d9d9; /* Light gray border */
+    padding: 16px; /* Space between border and text */
+    border-radius: 4px; /* Rounded corners */
+    max-height: 300px; /* Maximum height */
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  .markdown-response::-webkit-scrollbar {
+    width: 8px; /* Set width of the scrollbar */
+  }
+  
+  .markdown-response::-webkit-scrollbar-track {
+    background: transparent; /* Hide the track */
+  }
+  
+  .markdown-response::-webkit-scrollbar-thumb {
+    background: #888; /* Set thumb color */
+    border-radius: 4px; /* Set border radius for thumb */
+  }
+  
+  .markdown-response::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Change thumb color on hover */
+  }
+
 .h1,
 .h2,
 .h3,

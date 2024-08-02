@@ -30,9 +30,12 @@ import {
 } from '@ant-design/icons';
 import utils from 'utils';
 import { useSelector } from 'react-redux';
+
 import { getLast5YearsData, getTotalEmissions, getTotalMitigations } from './util';
 import fetchMitigationMeasures from './service';
-
+import fetchAIResponse from './service';
+import ReactMarkdown from 'react-markdown';
+import { Input, Spin } from 'antd'; 
 
 const MembersChart = props => (
   <ApexChart {...props}/>
@@ -211,6 +214,7 @@ export const DefaultDashboard = () => {
     data: energyemissions.map(item => item[selectedSector])
   }];
 
+  // AI SUGESSION
   const [mitigationMeasures, setMitigationMeasures] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -228,6 +232,35 @@ export const DefaultDashboard = () => {
 
     fetchAndSetMitigationMeasures();
   }, []);
+
+  //AI CHAT
+  const [userPrompt, setUserPrompt] = useState('');
+  const [response, setResponse] = useState('');
+  const [chatloading, setChatLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    setUserPrompt(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    const validTopics = ['energy', 'emissions', 'climate', 'carbon', 'thermal', 'mitigation'];
+
+    // if (!validTopics.some(topic => userPrompt.toLowerCase().includes(topic))) {
+    //   setResponse('Please ask something about energy emissions or climate change.');
+    //   return;
+    // }
+
+    setChatLoading(true);
+
+    try {
+      const aiResponse = await fetchAIResponse(userPrompt, energyemissions);
+      setResponse(aiResponse);
+    } catch (error) {
+      setResponse(error.message);
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
 
   return (
@@ -325,7 +358,7 @@ export const DefaultDashboard = () => {
             </div>
           </Card>
         </Col> */}
-        <Col xs={24} sm={24} md={24} lg={17}>
+        <Col xs={24} sm={24} md={24} lg={18}>
           <Card title="Suggested Mitigation Measures" extra={<CardDropdown items={latestTransactionOption} />}>
             {/* <Table 
               className="no-border-last" 
@@ -335,16 +368,36 @@ export const DefaultDashboard = () => {
               pagination={false}
             /> */}
             {loading ? (
-          <div className="font-size-md">Loading...</div>
+          <Spin size="small" style={{ marginTop: 10 }} />
         ) : (
-          <div className="font-size-md">{mitigationMeasures}</div>
+          <div className="markdown-response mt-4"><ReactMarkdown>{mitigationMeasures}</ReactMarkdown></div>
+          
         )}
+          </Card>
+        </Col>
+        <Col xs={24} sm={24} md={24} lg={6}>
+          <Card title="Ask Our AI Assistant">
+            <div className={`d-flex align-items-center justify-content-between mb-4 `}>
+              <Input
+                value={userPrompt}
+                onChange={handleInputChange}
+                placeholder="Enter your question about energy emissions..."
+                rows={1}
+              />
+              <Button type="default" size="small" onClick={handleSubmit}>Submit</Button>
+            </div>
+            {chatloading ? (
+              <Spin size="small" style={{ marginTop: 10 }} />
+            ) : (
+              <div className="markdown-response" style={{ marginTop: 20 }}>
+                <ReactMarkdown>{response}</ReactMarkdown>
+              </div>
+            )}
           </Card>
         </Col>
       </Row>
     </>
   )
 }
-
 
 export default DefaultDashboard;

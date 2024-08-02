@@ -107,37 +107,8 @@ const SearchInput = props => {
 	}
 
 	return (
-		<AutoComplete
-			ref={inputRef} 
-			css={css`
-				${!isMobile ? `
-					min-width: 300px;
-					width: 100%;
-			
-					.ant-input-affix-wrapper {
-						background-color: ${mode === 'light' ? '#1b2531' : BODY_BACKGROUND};
-			
-						.ant-input {
-							background-color: transparent;
-						}
-			
-						.ant-input-prefix {
-							color: ${GRAY_SCALE.GRAY_LIGHT};
-						}
-					}
-				` : ''}
-			`}
-			popupClassName="nav-search-dropdown"
-			options={options}
-			onSelect={onSelect}
-			onSearch={onSearch}
-			value={value}
-			filterOption={(inputValue, option) => 
-				option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-			}
-		>
-			<Input placeholder="Search..."  prefix={<SearchOutlined className="mr-0" />} />
-		</AutoComplete>
+			<Input placeholder="Ask me something..."/>
+		// prefix={<SearchOutlined className="mr-0" />}
 	)
 }
 

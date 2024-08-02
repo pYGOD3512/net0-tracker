@@ -94,7 +94,7 @@ export const HeaderNav = props => {
 								</NavItem>
 							)
 						}
-						{isMobile ?
+						{/* {isMobile ?
                             <div className="ant-menu-item ant-menu-item-only-child" onClick={() => {onSearchActive()}}>
                                 <SearchOutlined />
                             </div>
@@ -103,6 +103,8 @@ export const HeaderNav = props => {
                                 <SearchInput mode={navMode} isMobile={isMobile} />
                             </div>
                         }
+							<div><SearchInput mode={navMode} isMobile={isMobile} /></div> */}
+
 					</NavEdge>
 					<NavEdge right>
 						<NavNotification mode={navMode} />
