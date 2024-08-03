@@ -32,14 +32,27 @@ import utils from 'utils';
 import { useSelector } from 'react-redux';
 
 import { getLast5YearsData, getTotalEmissions, getTotalMitigations } from './util';
-import fetchMitigationMeasures from './service';
-import fetchAIResponse from './service';
+import fetchMitigationMeasures from './suggessionService';
+import {fetchAIResponse} from './aiService';
 import ReactMarkdown from 'react-markdown';
-import { Input, Spin } from 'antd'; 
+import { Input, Spin, Select } from 'antd'; 
 
-const MembersChart = props => (
-  <ApexChart {...props}/>
-)
+const { Option } = Select;
+// const MembersChart = props => (
+//   <ApexChart {...props}/>
+// )
+
+const MembersChart = (props) => {
+  const { title, ...chartProps } = props;
+
+  return (
+    <div>
+      {title && <h4 className="mb-0">{title}</h4>}
+      <ApexChart {...chartProps} />
+    </div>
+  );
+};
+
 const extractSectors = (data) => {
   if (data.length === 0) return [];
   const firstEntry = data[0];
@@ -160,6 +173,7 @@ const tableColumns = [
 const COLORS = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'];
 
 export const DefaultDashboard = () => {
+
   const [visitorChartData] = useState(VisitorChartData);
   // const [annualStatisticData] = useState(AnnualStatisticData);
   const [annualStatisticData, setAnnualStatisticData] = useState([]);
@@ -167,6 +181,12 @@ export const DefaultDashboard = () => {
   const [newMembersData] = useState(NewMembersData)
   const [recentTransactionData] = useState(RecentTransactionData)
   const { direction } = useSelector(state => state.theme)
+
+  // Determine the default year range dynamically based on the available data
+  const yearOptions = visitorChartData.categories;
+  const defaultYearRange = [yearOptions[0], yearOptions[yearOptions.length - 1]];
+  
+  const [yearRange, setYearRange] = useState(defaultYearRange);
 
   useEffect(() => {
     const yearIndex = visitorChartData.series[0].data.length - 1;
@@ -179,6 +199,28 @@ export const DefaultDashboard = () => {
     const statistics = calculateAnnualStatistics(visitorChartData, yearIndex);
     setAnnualStatisticData(statistics);
   }
+
+  const handleStartYearChange = (value) => {
+    setYearRange([value, yearRange[1]]);
+  };
+
+  const handleEndYearChange = (value) => {
+    setYearRange([yearRange[0], value]);
+  };
+
+  const filteredVisitorChartData = {
+    series: visitorChartData.series.map(series => ({
+      ...series,
+      data: series.data.slice(
+        yearOptions.indexOf(yearRange[0]),
+        yearOptions.indexOf(yearRange[1]) + 1
+      )
+    })),
+    categories: yearOptions.slice(
+      yearOptions.indexOf(yearRange[0]),
+      yearOptions.indexOf(yearRange[1]) + 1
+    ),
+  };
 
   const SECTORS = extractSectors(energyemissions);
   const [selectedSector, setSelectedSector] = useState(SECTORS[0]);
@@ -225,10 +267,15 @@ export const DefaultDashboard = () => {
       const totalEmissions = getTotalEmissions(last5YearsData);
       const totalMitigations = getTotalMitigations(last5YearsData);
 
-      const measures = await fetchMitigationMeasures(last5YearsData, totalEmissions, totalMitigations);
-      setMitigationMeasures(measures);
-      setLoading(false);
+      try {
+        const measures = await fetchMitigationMeasures(last5YearsData, totalEmissions, totalMitigations);
+        setMitigationMeasures(measures);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     };
+
 
     fetchAndSetMitigationMeasures();
   }, []);
@@ -243,13 +290,6 @@ export const DefaultDashboard = () => {
   };
 
   const handleSubmit = async () => {
-    const validTopics = ['energy', 'emissions', 'climate', 'carbon', 'thermal', 'mitigation'];
-
-    // if (!validTopics.some(topic => userPrompt.toLowerCase().includes(topic))) {
-    //   setResponse('Please ask something about energy emissions or climate change.');
-    //   return;
-    // }
-
     setChatLoading(true);
 
     try {
@@ -284,10 +324,36 @@ export const DefaultDashboard = () => {
           </Row>
           <Row gutter={16}>
             <Col span={24}>
+            <div className={`d-flex align-items-center justify-content-end mb-2 `}>
+            <Select
+              style={{ width: '10%', height: '2rem', marginRight: '10px' }}
+              defaultValue={yearRange[0]}
+              onChange={handleStartYearChange}
+            >
+              {yearOptions.map(year => (
+                <Option key={year} value={year}>
+                  {year}
+                </Option>
+              ))}
+            </Select>
+            <Select
+              style={{ width: '10%', height: '2rem' }}
+              defaultValue={yearRange[1]}
+              onChange={handleEndYearChange}
+            >
+              {yearOptions.map(year => (
+                <Option key={year} value={year}>
+                  {year}
+                </Option>
+              ))}
+            </Select>
+          </div>
                 <ChartWidget 
                   title="Emissions and Estimated Emissions Mitigation over time" 
-                  series={visitorChartData.series} 
-                  xAxis={visitorChartData.categories} 
+                  // series={visitorChartData.series} 
+                  // xAxis={visitorChartData.categories} 
+                  series={filteredVisitorChartData.series} 
+                  xAxis={filteredVisitorChartData.categories}
                   height={'400px'}
                   direction={direction}
                   onClick={handleChartClick}
@@ -303,7 +369,7 @@ export const DefaultDashboard = () => {
             extra={<Button type="primary">Learn More</Button>}
           /> */}
           <PieChart
-            height={400}
+            height={500}
             subtitle="Contribution of energy sources to electricity generation"  
           />
           {/* <StatisticWidget 
@@ -327,6 +393,7 @@ export const DefaultDashboard = () => {
       <StatisticWidget
         title={
           <MembersChart
+            title='Individual Energy Supply'
             options={memberChartOption}
             series={chartSeries}
             height={200}
@@ -359,7 +426,7 @@ export const DefaultDashboard = () => {
           </Card>
         </Col> */}
         <Col xs={24} sm={24} md={24} lg={18}>
-          <Card title="Suggested Mitigation Measures" extra={<CardDropdown items={latestTransactionOption} />}>
+          <Card title="AI Suggested Mitigation Measures" extra={<CardDropdown items={latestTransactionOption} />}>
             {/* <Table 
               className="no-border-last" 
               columns={tableColumns} 
@@ -370,18 +437,18 @@ export const DefaultDashboard = () => {
             {loading ? (
           <Spin size="small" style={{ marginTop: 10 }} />
         ) : (
-          <div className="markdown-response mt-4"><ReactMarkdown>{mitigationMeasures}</ReactMarkdown></div>
+          <div className="markdown-response mt-2"><ReactMarkdown>{mitigationMeasures}</ReactMarkdown></div>
           
         )}
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={6}>
-          <Card title="Ask Our AI Assistant">
+          <Card title="Talk to our AI Assistant">
             <div className={`d-flex align-items-center justify-content-between mb-4 `}>
               <Input
                 value={userPrompt}
                 onChange={handleInputChange}
-                placeholder="Enter your question about energy emissions..."
+                placeholder="Hi! Ask me something"
                 rows={1}
               />
               <Button type="default" size="small" onClick={handleSubmit}>Submit</Button>

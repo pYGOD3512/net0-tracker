@@ -44,7 +44,7 @@ export const apexLineChartDefaultOption = {
 			enabled: true
 		},
 		toolbar: {
-			show: true
+			show: false
 		}
 	},
 	colors: [...COLORS],

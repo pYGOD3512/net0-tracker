@@ -15,7 +15,14 @@ class Pie extends Component {
 			series: this.getSeriesData(energyemissions[0]),
 			options: {
 				colors: props.colors || COLORS,
-				labels: props.labels || ['Power sector/GWh', 'Thermal/GWh', 'Renewable/GWh', 'Hydro/GWh'],
+				labels: props.labels || ['Power sector/GWh','Renewable/GWh'],
+				plotOptions: {
+					pie: {
+						donut: {
+							size: '50%', // Adjust the size of the donut hole
+						},
+					},
+				},
 				responsive: [{
 					breakpoint: 480,
 					options: {
@@ -42,9 +49,9 @@ class Pie extends Component {
 	getSeriesData = (data) => {
 		return [
 			data['Power sector/GWh'],
-			data['Thermal/GWh'],
+			// data['Thermal/GWh'],
 			data['Renewable/GWh'],
-			data['Hydro/GWh']
+			// data['Hydro/GWh']
 		];
 	}
 
@@ -58,13 +65,13 @@ class Pie extends Component {
 				<Chart
 					options={this.state.options}
 					series={this.state.series}
-					height={height || 300}
-					type="pie"
+					height={height || 500}
+					type="donut"
 				/>
 				<Select 
 					defaultValue={this.state.selectedYear}
 					onChange={this.handleYearChange}
-					style={{ width: '30%', height: '1%' }}
+					style={{ width: '25%', height: '2rem' }}
 				>
 					{years.map(year => (
 						<Option key={year} value={year}>{year}</Option>

@@ -39,7 +39,7 @@
   }
   
   .markdown-response::-webkit-scrollbar {
-    width: 8px; /* Set width of the scrollbar */
+    width: 5px; /* Set width of the scrollbar */
   }
   
   .markdown-response::-webkit-scrollbar-track {
