@@ -14,24 +14,24 @@ import 'firebase/compat/firestore';
 
 import firebaseConfig from 'configs/FirebaseConfig';
 
-const firebaseApp = initializeApp(firebaseConfig);
+// const firebaseApp = initializeApp(firebaseConfig);
 
-const db = getFirestore(firebaseApp);
-const auth = getAuth(firebaseApp);
-const currentUser = auth.currentUser
+// const db = getFirestore(firebaseApp);
+// const auth = getAuth(firebaseApp);
+// const currentUser = auth.currentUser
 const googleAuthProvider = new GoogleAuthProvider();
 const facebookAuthProvider = new FacebookAuthProvider();
 
 export {
-	db,
-	auth,
-	currentUser,
+	// db,
+	// auth,
+	// currentUser,
 	googleAuthProvider,
 	GoogleAuthProvider,
 	facebookAuthProvider,
 	FacebookAuthProvider,
-	signInWithEmailAndPassword,
-	signOut,
-	signInWithPopup,
-	createUserWithEmailAndPassword
+	// signInWithEmailAndPassword,
+	// signOut,
+	// signInWithPopup,
+	// createUserWithEmailAndPassword
 };

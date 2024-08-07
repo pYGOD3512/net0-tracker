@@ -1,46 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Avatar, Dropdown, Table, Menu, Tag } from 'antd';
+import { Row, Col, Button, Dropdown, Spin, Select, Input } from 'antd';
 import StatisticWidget from 'components/shared-components/StatisticWidget';
 import ChartWidget from 'components/shared-components/ChartWidget';
-import AvatarStatus from 'components/shared-components/AvatarStatus';
-import GoalWidget from 'components/shared-components/GoalWidget';
 import PieChart from 'components/shared-components/PieChart';
 import Card from 'components/shared-components/Card';
 import Flex from 'components/shared-components/Flex';
 import { 
-  VisitorChartData, 
-  // AnnualStatisticData,
   calculateAnnualStatistics, 
-  ActiveMembersData,
   energyemissions, 
-  NewMembersData, 
-  RecentTransactionData 
+  VisitorChartData, // Importing the hardcoded data
 } from './DefaultDashboardData';
 import ApexChart from 'react-apexcharts';
 import { apexLineChartDefaultOption, COLOR_2 } from 'constants/ChartConstant';
 import { SPACER } from 'constants/ThemeConstant'
 import { 
-  UserAddOutlined, 
   FileExcelOutlined, 
   PrinterOutlined, 
-  PlusOutlined, 
   EllipsisOutlined, 
-  StopOutlined, 
   ReloadOutlined 
 } from '@ant-design/icons';
-import utils from 'utils';
 import { useSelector } from 'react-redux';
 
 import { getLast5YearsData, getTotalEmissions, getTotalMitigations } from './util';
 import fetchMitigationMeasures from './suggessionService';
 import {fetchAIResponse} from './aiService';
 import ReactMarkdown from 'react-markdown';
-import { Input, Spin, Select } from 'antd'; 
+import { useDataContext } from '../../../../context/DataContext';
 
 const { Option } = Select;
-// const MembersChart = props => (
-//   <ApexChart {...props}/>
-// )
 
 const MembersChart = (props) => {
   const { title, ...chartProps } = props;
@@ -57,6 +44,18 @@ const extractSectors = (data) => {
   if (data.length === 0) return [];
   const firstEntry = data[0];
   return Object.keys(firstEntry).filter(key => key !== 'Year');
+};
+
+const extractAllSectors = (data) => {
+  if (data.length === 0) return [];
+  // Collect all unique keys across all entries
+  const allKeys = new Set();
+  data.forEach(entry => {
+    Object.keys(entry).forEach(key => {
+      if (key !== 'Year') allKeys.add(key);
+    });
+  });
+  return Array.from(allKeys);
 };
 
 const memberChartOption = {
@@ -102,27 +101,6 @@ const latestTransactionOption = [
   },
 ]
 
-const newJoinMemberOptions = [
-  {
-    key: 'Add all',
-    label: (
-      <Flex alignItems="center" gap={SPACER[2]}>
-        <PlusOutlined />
-        <span className="ml-2">Add all</span>
-      </Flex>
-    ),
-  },
-  {
-    key: 'Disable all',
-    label: (
-      <Flex alignItems="center" gap={SPACER[2]}>
-        <StopOutlined />
-        <span className="ml-2">Disable all</span>
-      </Flex>
-    ),
-  },
-]
-
 const CardDropdown = ({items}) => {
 
   return (
@@ -134,117 +112,109 @@ const CardDropdown = ({items}) => {
   )
 }
 
-const tableColumns = [
-  {
-    title: 'Example',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text, record) => (
-      <div className="d-flex align-items-center">
-        <Avatar size={30} className="font-size-sm" style={{backgroundColor: record.avatarColor}}>
-          {utils.getNameInitial(text)}
-        </Avatar>
-        <span className="ml-2">{text}</span>
-      </div>
-    ),
-  },
-  {
-    title: 'Example',
-    dataIndex: 'date',
-    key: 'date',
-  },
-  {
-    title: 'Example',
-    dataIndex: 'amount',
-    key: 'amount',
-  },
-  {
-    title: () => <div className="text-right">Example</div>,
-    key: 'status',
-    render: (_, record) => (
-      <div className="text-right">
-        <Tag className="mr-0" color={record.status === 'Approved' ? 'cyan' : record.status === 'Pending' ? 'blue' : 'volcano'}>{record.status}</Tag>
-      </div>
-    ),
-  },
-];
-
 
 const COLORS = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'];
 
 export const DefaultDashboard = () => {
 
-  const [visitorChartData] = useState(VisitorChartData);
-  // const [annualStatisticData] = useState(AnnualStatisticData);
+  const [chartData, setChartData] = useState({ series: [], categories: [] });
   const [annualStatisticData, setAnnualStatisticData] = useState([]);
-  const [activeMembersData] = useState(ActiveMembersData);
-  const [newMembersData] = useState(NewMembersData)
-  const [recentTransactionData] = useState(RecentTransactionData)
   const { direction } = useSelector(state => state.theme)
-
-  // Determine the default year range dynamically based on the available data
-  const yearOptions = visitorChartData.categories;
-  const defaultYearRange = [yearOptions[0], yearOptions[yearOptions.length - 1]];
+  const { uploadedData } = useDataContext();
+  const [yearRange, setYearRange] = useState([]);
+  const yearOptions = chartData.categories;
   
-  const [yearRange, setYearRange] = useState(defaultYearRange);
-
   useEffect(() => {
-    const yearIndex = visitorChartData.series[0].data.length - 1;
-    const statistics = calculateAnnualStatistics(visitorChartData, yearIndex);
-    setAnnualStatisticData(statistics);
-  }, [visitorChartData]);
+    // Check if uploadedData is available, otherwise use VisitorChartData
+    const dataToUse = uploadedData ? uploadedData.data : VisitorChartData.series;
+    const categoriesToUse = uploadedData ? uploadedData.data.map(row => row.Year).filter(year => year) : VisitorChartData.categories;
+
+    const categories = categoriesToUse;
+    console.log('Categories:', categories);
+
+    if (categories.length > 0) {
+      const firstYear = categories[0];
+      const lastYear = categories[categories.length - 1];
+
+      // Set yearRange with validation
+      setYearRange([firstYear || '1990', lastYear || '2022']);
+      
+      const series = [
+        {
+          name: 'Energy Sector / MtCO2e',
+          data: uploadedData ? dataToUse.map(row => row['EnergySector']) : dataToUse[0].data,
+        },
+        {
+          name: 'Mitigation Emissions',
+          data: uploadedData ? dataToUse.map(row => row['MitigationEmissions']) : dataToUse[1].data,
+        }
+      ];
+
+      setChartData({ series, categories });
+    } else {
+      setYearRange(['Default Start Year', 'Default End Year']);
+    }
+  }, [uploadedData]);
+
+  // Update statistics when chartData changes
+  useEffect(() => {
+    if (chartData.categories.length > 0) {
+      const latestIndex = chartData.categories.length - 1;
+      const statistics = calculateAnnualStatistics(chartData, latestIndex);
+      setAnnualStatisticData(statistics);
+    }
+  }, [chartData]);
 
   const handleChartClick = (event, chartContext, config) => {
     const yearIndex = config.dataPointIndex;
-    const statistics = calculateAnnualStatistics(visitorChartData, yearIndex);
+    const statistics = calculateAnnualStatistics(chartData, yearIndex);
     setAnnualStatisticData(statistics);
-  }
+  };
 
   const handleStartYearChange = (value) => {
     setYearRange([value, yearRange[1]]);
-  };
+  }
 
   const handleEndYearChange = (value) => {
     setYearRange([yearRange[0], value]);
   };
 
-  const filteredVisitorChartData = {
-    series: visitorChartData.series.map(series => ({
+  const filteredChartData = {
+    series: chartData.series.map(series => ({
       ...series,
       data: series.data.slice(
-        yearOptions.indexOf(yearRange[0]),
-        yearOptions.indexOf(yearRange[1]) + 1
+        chartData.categories.indexOf(yearRange[0]),
+        chartData.categories.indexOf(yearRange[1]) + 1
       )
     })),
-    categories: yearOptions.slice(
-      yearOptions.indexOf(yearRange[0]),
-      yearOptions.indexOf(yearRange[1]) + 1
+    categories: chartData.categories.slice(
+      chartData.categories.indexOf(yearRange[0]),
+      chartData.categories.indexOf(yearRange[1]) + 1
     ),
   };
 
-  const SECTORS = extractSectors(energyemissions);
+  const SECTORS = extractAllSectors(uploadedData ? uploadedData.data : energyemissions);
   const [selectedSector, setSelectedSector] = useState(SECTORS[0]);
-  const [currentYearData, setCurrentYearData] = useState({});
   const [value, setValue] = useState(0);
-  const [status, setStatus] = useState(0);
-  const [statusPercentage, setStatusPercentage] = useState('');
 
   useEffect(() => {
     const updateData = () => {
-      const lastYear = energyemissions[energyemissions.length - 1];
+      const lastYear = uploadedData ? uploadedData.data[uploadedData.data.length -1] : energyemissions[energyemissions.length - 1];
+      console.log(lastYear,'last year I dont know either number or text')
       setValue(lastYear[selectedSector]);
-      setCurrentYearData(lastYear);
+      console.log(lastYear[selectedSector],'This is the selected sector')
+      // setCurrentYearData(lastYear);
     };
 
     updateData();
     
-    const intervalId = setInterval(() => {
-      const currentIndex = SECTORS.indexOf(selectedSector);
-      const nextIndex = (currentIndex + 1) % SECTORS.length;
-      setSelectedSector(SECTORS[nextIndex]);
-    }, 5000);
+    // const intervalId = setInterval(() => {
+    //   const currentIndex = SECTORS.indexOf(selectedSector);
+    //   const nextIndex = (currentIndex + 1) % SECTORS.length;
+    //   setSelectedSector(SECTORS[nextIndex]);
+    // }, 10000);
 
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, [selectedSector, SECTORS]);
 
   const handleSectorChange = (event) => {
@@ -259,26 +229,28 @@ export const DefaultDashboard = () => {
   // AI SUGESSION
   const [mitigationMeasures, setMitigationMeasures] = useState('');
   const [loading, setLoading] = useState(true);
+  const dataToUse = uploadedData ? uploadedData.data : energyemissions;
+  console.log(dataToUse,'This is the data to use');
 
   useEffect(() => {
     const fetchAndSetMitigationMeasures = async () => {
-      // Extract the last 5 years of data
-      const last5YearsData = getLast5YearsData(energyemissions, SECTORS);
-      const totalEmissions = getTotalEmissions(last5YearsData);
-      const totalMitigations = getTotalMitigations(last5YearsData);
+      setLoading(true);
 
       try {
-        const measures = await fetchMitigationMeasures(last5YearsData, totalEmissions, totalMitigations);
+        // Determine which data to use
+
+        // Fetch mitigation measures
+        const measures = await fetchMitigationMeasures(JSON.stringify(dataToUse.slice(-5)));
         setMitigationMeasures(measures);
       } catch (error) {
+        console.error('Error fetching mitigation measures:', error);
       } finally {
         setLoading(false);
       }
     };
 
-
     fetchAndSetMitigationMeasures();
-  }, []);
+  }, [uploadedData, energyemissions]);
 
   //AI CHAT
   const [userPrompt, setUserPrompt] = useState('');
@@ -293,7 +265,7 @@ export const DefaultDashboard = () => {
     setChatLoading(true);
 
     try {
-      const aiResponse = await fetchAIResponse(userPrompt, energyemissions);
+      const aiResponse = await fetchAIResponse(userPrompt, dataToUse);
       setResponse(aiResponse);
     } catch (error) {
       setResponse(error.message);
@@ -302,15 +274,14 @@ export const DefaultDashboard = () => {
     }
   };
 
-
   return (
     <>  
-      <Row gutter={16}>
+      <Row gutter={16} id="DashboardContent">
         <Col xs={24} sm={24} md={24} lg={18}>
           <Row gutter={16}>
             {
               annualStatisticData.map((elm, i) => (
-                <Col xs={24} sm={24} md={24} lg={24} xl={8} key={i}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={8} key={i}>
                   <StatisticWidget 
                     title={elm.title} 
                     value={elm.value}
@@ -324,122 +295,79 @@ export const DefaultDashboard = () => {
           </Row>
           <Row gutter={16}>
             <Col span={24}>
-            <div className={`d-flex align-items-center justify-content-end mb-2 `}>
-            <Select
-              style={{ width: '10%', height: '2rem', marginRight: '10px' }}
-              defaultValue={yearRange[0]}
-              onChange={handleStartYearChange}
-            >
-              {yearOptions.map(year => (
-                <Option key={year} value={year}>
-                  {year}
-                </Option>
-              ))}
-            </Select>
-            <Select
-              style={{ width: '10%', height: '2rem' }}
-              defaultValue={yearRange[1]}
-              onChange={handleEndYearChange}
-            >
-              {yearOptions.map(year => (
-                <Option key={year} value={year}>
-                  {year}
-                </Option>
-              ))}
-            </Select>
-          </div>
-                <ChartWidget 
-                  title="Emissions and Estimated Emissions Mitigation over time" 
-                  // series={visitorChartData.series} 
-                  // xAxis={visitorChartData.categories} 
-                  series={filteredVisitorChartData.series} 
-                  xAxis={filteredVisitorChartData.categories}
-                  height={'400px'}
-                  direction={direction}
-                  onClick={handleChartClick}
-                />
+              <div className={`d-flex align-items-center justify-content-end mb-2 `}>
+                <Select
+                  style={{ width: '10%', height: '2rem', marginRight: '10px' }}
+                  value={yearRange[0]}
+                  onChange={handleStartYearChange}
+                >
+                  {yearOptions.map(year => (
+                    <Option key={year} value={year}>
+                      {year}
+                    </Option>
+                  ))}
+                </Select>
+                <Select
+                  style={{ width: '10%', height: '2rem' }}
+                  value={yearRange[1]}
+                  onChange={handleEndYearChange}
+                >
+                  {yearOptions.map(year => (
+                    <Option key={year} value={year}>
+                      {year}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+              <ChartWidget 
+                title="Emissions and Estimated Emissions Mitigation over time" 
+                series={filteredChartData.series} 
+                xAxis={filteredChartData.categories}
+                height={'400px'}
+                direction={direction}
+                onClick={handleChartClick}
+                extra={<CardDropdown items={latestTransactionOption} />}
+              />
             </Col>
           </Row>
         </Col>
         <Col xs={24} sm={24} md={24} lg={6}>
-          {/* <GoalWidget 
-            title="Monthly Target" 
-            value={87}
-            subtitle="You need abit more effort to hit monthly target"
-            extra={<Button type="primary">Learn More</Button>}
-          /> */}
           <PieChart
-            height={500}
+            height={250}
             subtitle="Contribution of energy sources to electricity generation"  
           />
-          {/* <StatisticWidget 
-            title={
-              <MembersChart 
-                options={memberChartOption}
-                series={activeMembersData}
-                height={145}
-              />
-            }
-            value='65.33'
-            status={3.7}
-            subtitle="Thermal/GWh"
-          /> */}
           <div>
-          {/* <select onChange={handleSectorChange} value={selectedSector}>
-        {SECTORS.map(sector => (
-          <option key={sector} value={sector}>{sector}</option>
-        ))}
-      </select> */}
-      <StatisticWidget
-        title={
-          <MembersChart
-            title='Individual Energy Supply'
-            options={memberChartOption}
-            series={chartSeries}
-            height={200}
-          />
-        }
-        value={value}
-        // status={status}
-        // status_percentage={statusPercentage}
-        subtitle={selectedSector}
-      />
+            {/* <select onChange={handleSectorChange} value={selectedSector}>
+              {SECTORS.map(sector => (
+                <option key={sector} value={sector}>{sector}</option>
+              ))}
+            </select> */}
+            <StatisticWidget
+              title={
+                <MembersChart
+                  title='Individual Energy Supply'
+                  options={memberChartOption}
+                  series={chartSeries}
+                  height={200}
+                />
+              }
+              value={value}
+              subtitle={selectedSector}
+            />
           </div>
         </Col>
       </Row>
       <Row gutter={16}>
-        {/* <Col xs={24} sm={24} md={24} lg={7}>
-          <Card title="Energy Generation" extra={<CardDropdown items={newJoinMemberOptions} />}>
-            <div className="mt-3">
-              {
-                newMembersData.map((elm, i) => (
-                  <div key={i} className={`d-flex align-items-center justify-content-between mb-4`}>
-                    <AvatarStatus id={i} src={elm.img} name={elm.name} subTitle={elm.title} />
-                    <div>
-                    icon={<UserAddOutlined />}
-                      <Button type="default" size="small">View Details</Button>
-                    </div>
-                  </div>
-                ))
-              }
-            </div>
-          </Card>
-        </Col> */}
         <Col xs={24} sm={24} md={24} lg={18}>
           <Card title="AI Suggested Mitigation Measures" extra={<CardDropdown items={latestTransactionOption} />}>
-            {/* <Table 
-              className="no-border-last" 
-              columns={tableColumns} 
-              dataSource={recentTransactionData} 
-              rowKey='id' 
-              pagination={false}
-            /> */}
             {loading ? (
-          <Spin size="small" style={{ marginTop: 10 }} />
-        ) : (
-          <div className="markdown-response mt-2"><ReactMarkdown>{mitigationMeasures}</ReactMarkdown></div>
-          
-        )}
+              <div className={`d-flex align-items-center justify-content-start`}>
+                <Spin size="small" />
+                <p className={`ml-2`}>Analyzing and suggesting mitigation measures</p>
+              </div>
+            ) : (
+              <div className="markdown-response mt-2"><ReactMarkdown>{mitigationMeasures}</ReactMarkdown></div>
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={24} md={24} lg={6}>

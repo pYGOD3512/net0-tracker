@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter  } from 'react-router-dom'
+import { DataProvider } from './context/DataContext';
 import { ThemeSwitcherProvider } from 'react-css-theme-switcher';
 import store from './store';
 import history from './history'
@@ -24,7 +25,9 @@ function App() {
             defaultTheme={THEME_CONFIG.currentTheme} 
             insertionPoint="styles-insertion-point"
           >
-            <Layouts />
+            <DataProvider>
+              <Layouts />
+            </DataProvider>
           </ThemeSwitcherProvider>
         </BrowserRouter>  
       </Provider>

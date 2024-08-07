@@ -29,53 +29,58 @@ export const VisitorChartData = {
 	]
 }
 
-// export const AnnualStatisticData = [
-// 	{
-// 		title: 'GHG Emissions (MtCO2e)',
-// 		value:'27.4', 
-// 		status: 0.1,
-// 		subtitle: `Compare to last year (2021)`
-// 	},
-// 	{
-// 		title: 'Mitigations (MtCO2e)',
-// 		value:'13.0', 
-// 		status: 1.31,
-// 		subtitle: `Compare to last year (2021)`
-// 	},
-// 	{
-// 		title: 'Gap Emissions (MtCO2e)',
-// 		value:'14.3', 
-// 		status: 0.7,
-// 		subtitle: `Compare to last year (2021)`
-// 	}
-// ]
-
 export const energyemissions = [
-	{ "Year": 2000, "Power sector/GWh": 7224, "Thermal/GWh": 614, "Renewable/GWh": 6610, "Hydro/GWh": 6610 },
-    { "Year": 2001, "Power sector/GWh": 7859, "Thermal/GWh": 1250, "Renewable/GWh": 6609, "Hydro/GWh": 6609 },
-    { "Year": 2002, "Power sector/GWh": 7273, "Thermal/GWh": 2237, "Renewable/GWh": 5036, "Hydro/GWh": 5036 },
-    { "Year": 2003, "Power sector/GWh": 5881, "Thermal/GWh": 1996, "Renewable/GWh": 3885, "Hydro/GWh": 3885 },
-    { "Year": 2004, "Power sector/GWh": 6038, "Thermal/GWh": 758, "Renewable/GWh": 5280, "Hydro/GWh": 5280 },
-    { "Year": 2005, "Power sector/GWh": 6788, "Thermal/GWh": 1159, "Renewable/GWh": 5629, "Hydro/GWh": 5629 },
-    { "Year": 2006, "Power sector/GWh": 8430, "Thermal/GWh": 2811, "Renewable/GWh": 5619, "Hydro/GWh": 5619 },
-    { "Year": 2007, "Power sector/GWh": 6978, "Thermal/GWh": 3251, "Renewable/GWh": 3727, "Hydro/GWh": 3727 },
-    { "Year": 2008, "Power sector/GWh": 8325, "Thermal/GWh": 2129, "Renewable/GWh": 6196, "Hydro/GWh": 6196 },
-    { "Year": 2009, "Power sector/GWh": 8958, "Thermal/GWh": 2081, "Renewable/GWh": 6877, "Hydro/GWh": 6877 },
-    { "Year": 2010, "Power sector/GWh": 10166, "Thermal/GWh": 3171, "Renewable/GWh": 6995, "Hydro/GWh": 6995 },
-    { "Year": 2011, "Power sector/GWh": 11200, "Thermal/GWh": 3639, "Renewable/GWh": 7561, "Hydro/GWh": 7561 },
-    { "Year": 2012, "Power sector/GWh": 12024, "Thermal/GWh": 3953, "Renewable/GWh": 8071, "Hydro/GWh": 8071 },
-    { "Year": 2013, "Power sector/GWh": 12871, "Thermal/GWh": 4635, "Renewable/GWh": 8236, "Hydro/GWh": 8233 },
-    { "Year": 2014, "Power sector/GWh": 12963, "Thermal/GWh": 4572, "Renewable/GWh": 8391, "Hydro/GWh": 8387 },
-    { "Year": 2015, "Power sector/GWh": 11491, "Thermal/GWh": 5644, "Renewable/GWh": 5847, "Hydro/GWh": 5844 },
-    { "Year": 2016, "Power sector/GWh": 13023, "Thermal/GWh": 7435, "Renewable/GWh": 5588, "Hydro/GWh": 5561 },
-    { "Year": 2017, "Power sector/GWh": 14068, "Thermal/GWh": 8424, "Renewable/GWh": 5644, "Hydro/GWh": 5616 },
-    { "Year": 2018, "Power sector/GWh": 16245, "Thermal/GWh": 10195, "Renewable/GWh": 6050, "Hydro/GWh": 6017 },
-    { "Year": 2019, "Power sector/GWh": 18198, "Thermal/GWh": 10894, "Renewable/GWh": 7304, "Hydro/GWh": 7252 },
-    { "Year": 2020, "Power sector/GWh": 20165, "Thermal/GWh": 12815, "Renewable/GWh": 7350, "Hydro/GWh": 7293 },
-    { "Year": 2021, "Power sector/GWh": 22060, "Thermal/GWh": 14417, "Renewable/GWh": 7643, "Hydro/GWh": 7521 },
-    { "Year": 2022, "Power sector/GWh": 23172, "Thermal/GWh": 14818, "Renewable/GWh": 8354, "Hydro/GWh": 8192 },
-    { "Year": 2023, "Power sector/GWh": 24265, "Thermal/GWh": 14930, "Renewable/GWh": 9335, "Hydro/GWh": 9187 }
+	{ "Year": 2000, "Power sector/GWh": 7224, "Renewable/GWh": 6610},
+    { "Year": 2001, "Power sector/GWh": 7859,  "Renewable/GWh": 6609 },
+    { "Year": 2002, "Power sector/GWh": 7273,  "Renewable/GWh": 5036 },
+    { "Year": 2003, "Power sector/GWh": 5881,  "Renewable/GWh": 3885 },
+    { "Year": 2004, "Power sector/GWh": 6038, "Renewable/GWh": 5280},
+    { "Year": 2005, "Power sector/GWh": 6788,  "Renewable/GWh": 5629},
+    { "Year": 2006, "Power sector/GWh": 8430,  "Renewable/GWh": 5619},
+    { "Year": 2007, "Power sector/GWh": 6978,  "Renewable/GWh": 3727},
+    { "Year": 2008, "Power sector/GWh": 8325,  "Renewable/GWh": 6196},
+    { "Year": 2009, "Power sector/GWh": 8958,  "Renewable/GWh": 6877},
+    { "Year": 2010, "Power sector/GWh": 10166, "Renewable/GWh": 6995},
+    { "Year": 2011, "Power sector/GWh": 11200, "Renewable/GWh": 7561},
+    { "Year": 2012, "Power sector/GWh": 12024, "Renewable/GWh": 8071},
+    { "Year": 2013, "Power sector/GWh": 12871, "Renewable/GWh": 8236},
+    { "Year": 2014, "Power sector/GWh": 12963, "Renewable/GWh": 8391},
+    { "Year": 2015, "Power sector/GWh": 11491, "Renewable/GWh": 5847},
+    { "Year": 2016, "Power sector/GWh": 13023, "Renewable/GWh": 5588},
+    { "Year": 2017, "Power sector/GWh": 14068, "Renewable/GWh": 5644},
+    { "Year": 2018, "Power sector/GWh": 16245,  "Renewable/GWh": 6050 },
+    { "Year": 2019, "Power sector/GWh": 18198,  "Renewable/GWh": 7304 },
+    { "Year": 2020, "Power sector/GWh": 20165,  "Renewable/GWh": 7350 },
+    { "Year": 2021, "Power sector/GWh": 22060,  "Renewable/GWh": 7643 },
+    { "Year": 2022, "Power sector/GWh": 23172,  "Renewable/GWh": 8354 },
+    { "Year": 2023, "Power sector/GWh": 24265,  "Renewable/GWh": 9335 },
 ]
+// export const energyemissions = [
+// 	{ "Year": 2000, "Power sector/GWh": 7224, "Thermal/GWh": 614, "Renewable/GWh": 6610, "Hydro/GWh": 6610 },
+//     { "Year": 2001, "Power sector/GWh": 7859, "Thermal/GWh": 1250, "Renewable/GWh": 6609, "Hydro/GWh": 6609 },
+//     { "Year": 2002, "Power sector/GWh": 7273, "Thermal/GWh": 2237, "Renewable/GWh": 5036, "Hydro/GWh": 5036 },
+//     { "Year": 2003, "Power sector/GWh": 5881, "Thermal/GWh": 1996, "Renewable/GWh": 3885, "Hydro/GWh": 3885 },
+//     { "Year": 2004, "Power sector/GWh": 6038, "Thermal/GWh": 758, "Renewable/GWh": 5280, "Hydro/GWh": 5280 },
+//     { "Year": 2005, "Power sector/GWh": 6788, "Thermal/GWh": 1159, "Renewable/GWh": 5629, "Hydro/GWh": 5629 },
+//     { "Year": 2006, "Power sector/GWh": 8430, "Thermal/GWh": 2811, "Renewable/GWh": 5619, "Hydro/GWh": 5619 },
+//     { "Year": 2007, "Power sector/GWh": 6978, "Thermal/GWh": 3251, "Renewable/GWh": 3727, "Hydro/GWh": 3727 },
+//     { "Year": 2008, "Power sector/GWh": 8325, "Thermal/GWh": 2129, "Renewable/GWh": 6196, "Hydro/GWh": 6196 },
+//     { "Year": 2009, "Power sector/GWh": 8958, "Thermal/GWh": 2081, "Renewable/GWh": 6877, "Hydro/GWh": 6877 },
+//     { "Year": 2010, "Power sector/GWh": 10166, "Thermal/GWh": 3171, "Renewable/GWh": 6995, "Hydro/GWh": 6995 },
+//     { "Year": 2011, "Power sector/GWh": 11200, "Thermal/GWh": 3639, "Renewable/GWh": 7561, "Hydro/GWh": 7561 },
+//     { "Year": 2012, "Power sector/GWh": 12024, "Thermal/GWh": 3953, "Renewable/GWh": 8071, "Hydro/GWh": 8071 },
+//     { "Year": 2013, "Power sector/GWh": 12871, "Thermal/GWh": 4635, "Renewable/GWh": 8236, "Hydro/GWh": 8233 },
+//     { "Year": 2014, "Power sector/GWh": 12963, "Thermal/GWh": 4572, "Renewable/GWh": 8391, "Hydro/GWh": 8387 },
+//     { "Year": 2015, "Power sector/GWh": 11491, "Thermal/GWh": 5644, "Renewable/GWh": 5847, "Hydro/GWh": 5844 },
+//     { "Year": 2016, "Power sector/GWh": 13023, "Thermal/GWh": 7435, "Renewable/GWh": 5588, "Hydro/GWh": 5561 },
+//     { "Year": 2017, "Power sector/GWh": 14068, "Thermal/GWh": 8424, "Renewable/GWh": 5644, "Hydro/GWh": 5616 },
+//     { "Year": 2018, "Power sector/GWh": 16245, "Thermal/GWh": 10195, "Renewable/GWh": 6050, "Hydro/GWh": 6017 },
+//     { "Year": 2019, "Power sector/GWh": 18198, "Thermal/GWh": 10894, "Renewable/GWh": 7304, "Hydro/GWh": 7252 },
+//     { "Year": 2020, "Power sector/GWh": 20165, "Thermal/GWh": 12815, "Renewable/GWh": 7350, "Hydro/GWh": 7293 },
+//     { "Year": 2021, "Power sector/GWh": 22060, "Thermal/GWh": 14417, "Renewable/GWh": 7643, "Hydro/GWh": 7521 },
+//     { "Year": 2022, "Power sector/GWh": 23172, "Thermal/GWh": 14818, "Renewable/GWh": 8354, "Hydro/GWh": 8192 },
+//     { "Year": 2023, "Power sector/GWh": 24265, "Thermal/GWh": 14930, "Renewable/GWh": 9335, "Hydro/GWh": 9187 }
+// ]
 
 export const calculateAnnualStatistics = (visitorChartData, yearIndex) => {
 	const energyData = visitorChartData.series[0].data;

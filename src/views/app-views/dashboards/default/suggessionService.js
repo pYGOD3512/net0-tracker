@@ -1,20 +1,29 @@
 import axios from 'axios';
+import { notification } from 'antd';
 
 // const API_KEY = process.env.REACT_APP_OPENAI_API_KE;
 const API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
 // const API_URL = process.env.REACT_APP_OPENAI_UR;  
 const API_URL = process.env.REACT_APP_OPENAI_URL;  
 
-const fetchMitigationMeasures = async (last5YearsData, totalEmissions, totalMitigations) => {
+const fetchMitigationMeasures = async (energyData) => {
 
   const prompt = `
-    Here is the emission and mitigation data for the last 5 years:
-    ${JSON.stringify(last5YearsData)}
-    Total Emissions: ${totalEmissions}
-    Total Mitigations: ${totalMitigations}
 
-    Analyze these data trends, talk about how they're behaving over the years and provide possible mitigation measures if possible give example to reduce the emissions 
-    so we can head towards net zero. Be detailed and straight forward, provide you answer in points and a brief explanations to them
+    I have a dataset ${energyData} containing emissions data over a specified period of a country. Please analyze this data carefully, focusing on the following aspects:
+
+    1. **Trend Analysis:** Identify and describe any significant trends or patterns in the emissions data over the period. Highlight any increases, decreases, or periods of stability.
+
+    2. **Impact Assessment:** Evaluate how the observed trends might impact the overall emissions levels. Discuss any potential causes for these trends and their implications.
+
+    3. **Mitigation Measures:** Based on the trends and data analysis, suggest the best mitigation measures to help reduce emissions. Include specific strategies or actions that could be implemented to achieve a net-zero emissions goal. based on the data and trend you can give example if any
+
+    4. **Recommendations:** Provide actionable recommendations tailored to the data, considering factors such as feasibility, cost, and potential effectiveness. 
+
+    The dataset includes information on various types of emissions, sources, and any relevant context that might influence the results.
+
+    Please ensure that your analysis is detailed and provides practical suggestions for achieving net-zero emissions.
+
   `;
 
   const requestBody = {
@@ -47,7 +56,10 @@ const fetchMitigationMeasures = async (last5YearsData, totalEmissions, totalMiti
       return 'An error occured suggesting mitigation measures (Check internet connection)';
     }
   } catch (error) {
-    console.error('API request failed:', error.response ? error.response.data : error.message);
+    notification.error({
+      message: 'Uh, ooh!',
+      description: 'An error occured whiles analyzing and suggesting mitigations measures, please check connectiona and try again',
+  });
     return 'An error occured suggesting mitigation measures (Check internet connection)';
   }
 };
