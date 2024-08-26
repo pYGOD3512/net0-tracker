@@ -73,16 +73,16 @@ export const apexLineChartDefaultOption = {
 		title: {
 			text: 'Time (Years)',
 			style: {
-				color: '#fff'
+				color: COLOR_TEXT
 			}
 		}
 	},
 	yaxis: {
 		tickAmount: 5,
 		title: {
-			text: 'GHGe (MtCO2)',
+			text: 'GHG emissions (tCO2)',
 			style: {
-				color: '#fff'
+				color: COLOR_TEXT
 			}
 		},
 		gridLines: {

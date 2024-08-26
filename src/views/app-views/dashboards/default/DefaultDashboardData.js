@@ -9,6 +9,7 @@ export const VisitorChartData = {
 			2812126.64, 2998987.46, 3838394.49, 3732948.65, 3716733.24, 
 			3607923.86, 3892806.94, 3700716.37, 4534615.74, 4690068.91, 
 			4762927.97]
+		// data: [ 2860000, 2780000, 4600000, 4790000, 5010000, 3860000, 3800000, 4780000, 6390000, 5350000, 4070000, 4320000, 5630000, 5570000, 4790000, 6030000, 7180000, 8600000, 6900000, 7780000, 12790000, 29480000, 14900000, 18110000, 19790000, 19500000, 22350000, 39420000, 27940000, 27300000, 21900000 ,22500000, 23700000]
 
 	  },
 	  {
@@ -18,7 +19,10 @@ export const VisitorChartData = {
 			415494.32, 419491.16, 445496.46, 535467.95, 605498.82, 655499.16, 
 			705500.23, 833039.02, 984617.04, 922814.48, 951478.34, 1004745.77, 
 			1005010.09, 1303827.06, 1600918.34, 2001717.25, 2307135.49, 2574834.54, 
-			2518026.95, 2517457.78]
+			2518026.95, 2517457.78]	  
+
+		// data: [null, null, null, null, null, null, null, null, null, null, 5275081.433, 4335504, 2949110.416, 2218887.776, 3413192.612, 3642579.81, 3218281.75, 2143798.831, 3841578.206, 4233734.562, 4378482.149, 5030550.525, 4964327.422, 4881132.709, 5304630.793, 4382576.504, 2823693.236, 3064232.485, 3539725.612, 4500162.523, 5020442.153, 5392630.077, 7025606.138]
+
 
 	  }
 	],
@@ -96,21 +100,21 @@ export const calculateAnnualStatistics = (visitorChartData, yearIndex) => {
 	
 	const AnnualStatisticData = [
 	  {
-		title: 'GHG Emissions (MtCO2e)',
+		title: 'Energy Sector GHG Emissions (tCO2e)',
 		value: latestEnergy,
 		status: (latestEnergy - previousEnergy).toFixed(2),
 		status_percentage: `(${(((latestEnergy - previousEnergy)/(previousEnergy))*100).toFixed(2)})%`,
 		subtitle: `Compare to last year (${visitorChartData.categories[yearIndex - 1]})`
 	  },
 	  {
-		title: 'Mitigations (MtCO2e)',
+		title: 'Mitigations (tCO2e)',
 		value: latestMitigation,
 		status: (latestMitigation - previousMitigation).toFixed(2),
 		status_percentage: `(${(((latestMitigation - previousMitigation)/(previousMitigation))*100).toFixed(2)})%`,
 		subtitle: `Compare to last year (${visitorChartData.categories[yearIndex - 1]})`
 	  },
 	  {
-		title: 'Gap Emissions (MtCO2e)',
+		title: 'Gap Emissions (tCO2e)',
 		value: latestGap,
 		status: (latestGap - previousGap).toFixed(2),
 		status_percentage: `(${(((latestGap - previousGap)/(previousGap))*100).toFixed(2)})%`,

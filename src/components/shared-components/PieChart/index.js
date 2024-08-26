@@ -109,14 +109,14 @@ class Pie extends Component {
 	render() {
 		const { height, subtitle } = this.props;
 		const years = this.filterValidData(this.props.uploadedData || defaultEnergyEmissions).map(item => item.Year);
-
+	
 		return (
 			<Card>
 				{subtitle && <span className="font-size-sm font-weight-bold">{subtitle}</span>}
 				<Chart
 					options={this.state.options}
 					series={this.state.series}
-					height={height || 500}
+					height={height || '400px'} // Provide a fallback height
 					type="donut"
 				/>
 				<Select
@@ -131,6 +131,7 @@ class Pie extends Component {
 			</Card>
 		);
 	}
+
 }
 
 // Create a wrapper to use the context

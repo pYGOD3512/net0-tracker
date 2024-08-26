@@ -332,10 +332,10 @@ export const DefaultDashboard = () => {
           </Row>
         </Col>
         <Col xs={24} sm={24} md={24} lg={6}>
-          <PieChart
-            height={250}
-            subtitle="Contribution of energy sources to electricity generation"  
-          />
+        <PieChart
+          height={300} // Adjust this value to your desired height
+          subtitle="Contribution of energy sources to electricity generation"
+        />
           <div>
             {/* <select onChange={handleSectorChange} value={selectedSector}>
               {SECTORS.map(sector => (

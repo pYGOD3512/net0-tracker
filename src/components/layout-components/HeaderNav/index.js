@@ -21,8 +21,8 @@ import utils from 'utils';
 
 import { Button, Modal, Select, Upload, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import Papa from 'papaparse'; // for CSV
-import * as XLSX from 'xlsx'; // for Excel
+import Papa from 'papaparse'; 
+import * as XLSX from 'xlsx'; 
 import { useDataContext } from '../../../context/DataContext';
 
 const { Option } = Select;
@@ -53,7 +53,7 @@ export const HeaderNav = props => {
         } else if (fileType.includes('sheet') || fileType.includes('excel')) {
             parseExcel(file);
         }
-        return false; // Prevent default upload behavior
+        return false; 
     };
 
     const parseCSV = (file) => {
@@ -91,7 +91,7 @@ export const HeaderNav = props => {
 		if (yearColumn && mitigationColumn && energyColumn && fileData) {
 			// Process the data
 			const processedData = fileData.map((row, index, arr) => {
-				// Skip processing if the row is completely empty
+				
 				if (Object.values(row).every(value => value === undefined || value === null || value === '')) {
 					return null;
 				}
@@ -103,40 +103,35 @@ export const HeaderNav = props => {
 					}
 				});
 			
-				// Handle missing data for yearColumn, mitigationColumn, and energyColumn
+				// Handle missing data for column
 				const year = row[yearColumn] !== undefined && row[yearColumn] !== null ? row[yearColumn] : null;
 				
 				// Function to interpolate missing values
 				const interpolateValue = (columnName) => {
 					if (row[columnName] !== undefined && row[columnName] !== null && row[columnName] !== '') {
-						return parseFloat(row[columnName].replace(/,/g, '')); // Convert to number
+						return parseFloat(row[columnName].replace(/,/g, '')); 
 					}
 			
 					// Find previous and next valid indices
 					let previousIndex = index - 1;
 					let nextIndex = index + 1;
 			
-					// Move back to find the last valid previous value
 					while (previousIndex >= 0 && (arr[previousIndex][columnName] === undefined || arr[previousIndex][columnName] === null || arr[previousIndex][columnName] === '')) {
 						previousIndex--;
 					}
 			
-					// Move forward to find the next valid value
 					while (nextIndex < arr.length && (arr[nextIndex][columnName] === undefined || arr[nextIndex][columnName] === null || arr[nextIndex][columnName] === '')) {
 						nextIndex++;
 					}
 			
-					// If neither previous nor next is valid, return null or some default value
 					if (previousIndex < 0 && nextIndex >= arr.length) {
 						return 'Unknown';
 					}
 			
-					// If no previous valid value, use the next valid value
 					if (previousIndex < 0) {
 						return parseFloat(arr[nextIndex][columnName].replace(/,/g, ''));
 					}
 			
-					// If no next valid value, use the previous valid value
 					if (nextIndex >= arr.length) {
 						return parseFloat(arr[previousIndex][columnName].replace(/,/g, ''));
 					}
@@ -158,7 +153,7 @@ export const HeaderNav = props => {
 					EnergySector: interpolatedEnergy,
 					...additionalData,
 				};
-			}).filter(row => row !== null); // Filter out null rows
+			}).filter(row => row !== null); 
 			
 	
 			setUploadedData({
