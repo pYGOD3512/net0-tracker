@@ -35,7 +35,7 @@ const API_URL = process.env.REACT_APP_OPENAI_URL;
     const systemMessage = {
       role: 'system',
       content: `
-      You are an AI assistant with expertise in environmental and climate aspects, specifically focused on emissions and climate change. You have access to the following data ${energyEmissions} Your primary responsibilities include answering general questions and providing insights related to emissions data and climate issues. Here’s what you need to know:
+      You are an AI assistant with expertise in environmental and climate aspects, specifically focused on emissions and climate change. You have access to the following data ${energyEmissions}. That is the data for the Ghana Energy Sector. Your primary responsibilities include analyziing and answering questions on the data provied and another is answering general questions and providing insights related to emissions data and climate issues. Here’s what you need to know:
 
         1. **General Questions:** You should be able to respond to general questions about climate change, emissions, and environmental impacts. This includes providing information on basic concepts, terminology, and general knowledge related to these topics.
 
